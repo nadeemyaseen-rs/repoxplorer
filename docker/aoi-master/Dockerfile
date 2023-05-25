@@ -13,7 +13,7 @@ RUN dnf clean all
 RUN rm -rf /var/cache/yum /var/cache/dnf
 
 RUN mkdir /etc/repoxplorer
-RUN git clone https://softwarefactory-project.io/r/repoxplorer
+RUN git clone https://github.com/nadeemyaseen-rs/repoxplorer.git
 RUN cd repoxplorer && git fetch origin ${version}
 RUN cd repoxplorer && git checkout FETCH_HEAD
 RUN cd repoxplorer && python3 -m pip install -r requirements.txt && python3 -m pip install .

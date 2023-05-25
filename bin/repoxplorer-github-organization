@@ -71,9 +71,9 @@ if __name__ == "__main__":
     templates = {
         args.org: {
             "branches": ["master", ],
-            "uri": "http://github.com/%s/" % args.org +
+            "uri": "git@github.com:%s/" % args.org +
                    "%(name)s",
-            "gitweb": "http://github.com/%s/" % args.org +
+            "gitweb": "git@github.com:%s/" % args.org +
                       "%(name)s/commit/%%(sha)s"}
     }
     projects = {
