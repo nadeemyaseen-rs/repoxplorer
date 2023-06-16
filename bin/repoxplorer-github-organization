@@ -22,6 +22,29 @@ import sys
 import yaml
 import github3
 
+def remove_not_req_repos(all_repos_yaml, not_req_repos, needed_one):
+    # Load data from YAML file 1
+    with open(all_repos_yaml, 'r') as f:
+        data1 = yaml.safe_load(f)
+
+    # Load data from YAML file 2
+    with open(not_req_repos, 'r') as f:
+        data2 = yaml.safe_load(f)
+
+    # Remove entries from all_repos_yaml's projects.repos that are present in not_req_repos's projects.repos
+    if 'projects' in data1 and 'projects' in data2:
+        for project, repos in data2['projects'].items():
+            if project in data1['projects']:
+                for repo, details in repos['repos'].items():
+                    if repo in data1['projects'][project]['repos']:
+                        del data1['projects'][project]['repos'][repo]
+
+    # Dump the remaining data to YAML file 3
+    with open(needed_one, 'w') as f:
+        yaml.safe_dump(data1, f)
+
+
+
 parser = argparse.ArgumentParser(
     description='Read a Github organization and create'
                 'the repoXplorer description file')
@@ -50,6 +73,10 @@ parser.add_argument(
 parser.add_argument(
     '--all-branches', action='store_true',
     help='Include all branches in indexed repositories')
+parser.add_argument(
+    '--dont_care', type=str,
+    help='YAML file path to dont care repo in organisation')
+
 
 args = parser.parse_args()
 
@@ -126,6 +153,8 @@ if __name__ == "__main__":
     with open(path, 'w') as fd:
         fd.write(yaml.safe_dump(struct,
                                 default_flow_style=False))
+    
+    remove_not_req_repos(path,args.dont_care,path) 
     print()
     print(("%s source repositories details"
            " has been written to %s" % (args.org, path)))
