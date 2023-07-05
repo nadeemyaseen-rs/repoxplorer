@@ -18,6 +18,7 @@
 import imp
 import sys
 import time
+import subprocess
 import logging
 import argparse
 import logging.config
@@ -73,6 +74,14 @@ def clean(conf):
 
 
 def process(conf):
+    # call github-orginasation initializer here as subprocess to keep it refreshing the YAML file
+    # replace ? with values
+    result = subprocess.run(["python3", "/usr/local/bin/repoxplorer-github-organization", "--org", "?","--token", "?","--all-branches","--skip-fork","--output-path", "?","--dont_care", "?"], capture_output=True, text=True)
+    if result.returncode == 0:
+        logger.info("Oraginzation YAML is created again %s" % (
+                    result.stdout))
+    else:
+        logger.exception("Error occurred during script execution. %s" %(result.stderr))
     projects_index = projects.Projects()
     prjs = projects_index.get_projects(source=['name', 'refs', 'meta-ref'])
     for project in prjs.values():
